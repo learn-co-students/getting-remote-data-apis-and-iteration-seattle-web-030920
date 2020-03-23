@@ -9,6 +9,10 @@ def get_character_movies_from_api(character_name)
 
   # iterate over the response hash to find the collection of `films` for the given
   #   `character`
+  character_data = response_hash["results"].find{|data| data["name"] == character_name}
+  film_urls = character_data["films"]
+  film_data = film_urls.map{|data| JSON.parse(RestClient.get(data))}
+  film_data
   # collect those film API urls, make a web request to each URL to get the info
   #  for that film
   # return value of this method should be collection of info about each film.
@@ -20,12 +24,18 @@ end
 
 def print_movies(films)
   # some iteration magic and puts out the movies in a nice list
+  films.each.with_index(1) do |data, index|
+    puts "#{index}. " + data["title"]
+  end
 end
 
 def show_character_movies(character)
   films = get_character_movies_from_api(character)
   print_movies(films)
+  #binding.pry
 end
+
+#show_character_movies("Luke Skywalker")
 
 ## BONUS
 
